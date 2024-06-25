@@ -20,6 +20,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -63,9 +64,21 @@ func main() {
 }
 
 func greet(w http.ResponseWriter, r *http.Request) {
+	type Response struct {
+		Message string `json:"message"`
+		Status  string `json:"status"`
+	}
+
 	name := r.URL.Query().Get("name")
 	if name == "" {
 		name = "Stranger"
 	}
-	fmt.Fprintf(w, "Hello, %s!\n", name)
+
+	response := Response{
+		Message: fmt.Sprintf("Hello, %s! This is your JSON response!", name),
+		Status:  "success",
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }
