@@ -1,5 +1,5 @@
 import ballerina/http;
-import ballerina/log;
+import ballerina/io;
 
 type Greeting record {
     string 'from;
@@ -17,10 +17,10 @@ service / on new http:Listener(8090) {
         http:Client beeClient = check new ("https://mytestbee.free.beeceptor.com");
         json|error resp = beeClient->get("/bee");
         if resp is error {
-            log:printError(resp.message());
+            io:println(resp.message());
             return error("ERROR");
         } else {
-            log:printInfo(resp.toString());
+            io:println(resp.toString());
             return resp.toJson();
         }
     }
